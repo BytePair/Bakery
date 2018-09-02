@@ -5,25 +5,24 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.NavUtils;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.widget.FrameLayout;
 import android.widget.TextView;
-import android.support.v4.app.NavUtils;
-import android.support.v7.app.ActionBar;
-import android.view.MenuItem;
 
 import com.bytepair.bakery.R;
-
 import com.bytepair.bakery.models.Ingredient;
 import com.bytepair.bakery.models.Recipe;
 import com.bytepair.bakery.models.Step;
@@ -99,7 +98,7 @@ public class StepListActivity extends AppCompatActivity {
                 actionBar.setTitle(mRecipe.getName());
             }
             toolbar.setTitle(mRecipe.getName());
-            ListView ingredientsListView = findViewById(R.id.ingredients_list_view);
+            NonScrollingListView ingredientsListView = findViewById(R.id.ingredients_view);
             ingredientsListView.setAdapter(new IngredientArrayAdapter(this, mRecipe.getIngredients()));
         }
 
@@ -145,6 +144,7 @@ public class StepListActivity extends AppCompatActivity {
 
                 Step step = (Step) view.getTag();
                 if (mTwoPane) {
+                    hidePlaceholderTextView();
                     highlightSelectedView(view);
                     Bundle arguments = new Bundle();
                     arguments.putString(StepDetailFragment.STEP_ARGUMENT, new Gson().toJson(step));
@@ -159,6 +159,20 @@ public class StepListActivity extends AppCompatActivity {
                     intent.putExtra(StepDetailFragment.STEP_ARGUMENT, new Gson().toJson(step));
 
                     context.startActivity(intent);
+                }
+            }
+
+            /**
+             * Makes detail container visible and hides the placeholder text
+             */
+            private void hidePlaceholderTextView() {
+                TextView textView = mParentActivity.findViewById(R.id.get_started_text_view);
+                if (textView != null) {
+                    textView.setVisibility(View.GONE);
+                }
+                FrameLayout frameLayout = mParentActivity.findViewById(R.id.step_detail_container);
+                if (frameLayout != null) {
+                    frameLayout.setVisibility(View.VISIBLE);
                 }
             }
         };
@@ -221,7 +235,7 @@ public class StepListActivity extends AppCompatActivity {
 
         private List<Ingredient> mIngredients;
 
-        public IngredientArrayAdapter(Context context, List<Ingredient> ingredients) {
+        IngredientArrayAdapter(Context context, List<Ingredient> ingredients) {
             super(context, 0, ingredients);
             mIngredients = ingredients;
         }
