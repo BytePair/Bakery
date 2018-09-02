@@ -1,4 +1,4 @@
-package com.bytepair.bakery.ui.interfaces;
+package com.bytepair.bakery.views.interfaces;
 
 public interface RecyclerViewInterface {
 

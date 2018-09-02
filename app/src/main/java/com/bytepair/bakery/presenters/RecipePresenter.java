@@ -3,7 +3,7 @@ package com.bytepair.bakery.presenters;
 import android.support.annotation.NonNull;
 
 import com.bytepair.bakery.models.Recipe;
-import com.bytepair.bakery.ui.interfaces.RecyclerViewInterface;
+import com.bytepair.bakery.views.interfaces.RecyclerViewInterface;
 import com.bytepair.bakery.utils.services.RecipeService;
 
 import java.util.ArrayList;

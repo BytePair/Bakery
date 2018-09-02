@@ -1,4 +1,4 @@
-package com.bytepair.bakery.ui;
+package com.bytepair.bakery.views;
 
 import android.content.res.Configuration;
 import android.os.Bundle;

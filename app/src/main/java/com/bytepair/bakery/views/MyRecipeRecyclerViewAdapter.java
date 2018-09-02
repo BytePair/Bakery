@@ -1,4 +1,4 @@
-package com.bytepair.bakery.ui;
+package com.bytepair.bakery.views;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import com.bytepair.bakery.R;
 import com.bytepair.bakery.models.Recipe;
-import com.bytepair.bakery.ui.RecipeFragment.OnListFragmentInteractionListener;
+import com.bytepair.bakery.views.RecipeFragment.OnListFragmentInteractionListener;
 
 import java.util.List;
 

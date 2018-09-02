@@ -1,4 +1,4 @@
-package com.bytepair.bakery.ui.dummy;
+package com.bytepair.bakery.views.dummy;
 
 import java.util.ArrayList;
 import java.util.HashMap;

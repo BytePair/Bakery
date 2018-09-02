@@ -1,4 +1,4 @@
-package com.bytepair.bakery.ui;
+package com.bytepair.bakery.views;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 import com.bytepair.bakery.R;
 import com.bytepair.bakery.models.Recipe;
 import com.bytepair.bakery.presenters.RecipePresenter;
-import com.bytepair.bakery.ui.interfaces.RecyclerViewInterface;
+import com.bytepair.bakery.views.interfaces.RecyclerViewInterface;
 
 import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
 
