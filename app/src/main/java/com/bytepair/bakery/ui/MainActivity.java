@@ -7,13 +7,14 @@ import android.util.Log;
 import android.widget.FrameLayout;
 
 import com.bytepair.bakery.R;
-import com.bytepair.bakery.ui.dummy.DummyContent;
+import com.bytepair.bakery.models.Recipe;
 
 import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
 
 public class MainActivity extends AppCompatActivity implements RecipeFragment.OnListFragmentInteractionListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
+    private RecipeFragment mRecipeFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,21 +27,22 @@ public class MainActivity extends AppCompatActivity implements RecipeFragment.On
         if (frameLayout != null) {
 
             // However, if we're being restored from a previous state,
+            // return early to avoid making duplicate fragments
             // remove existing views so we don't get overlapping fragments
             if (savedInstanceState != null) {
-                frameLayout.removeAllViews();
+                return;
             }
 
             // Create a new Fragment to be placed in the activity layout
-            RecipeFragment recipeFragment = RecipeFragment.newInstance(getNumberOfColumns());
+            mRecipeFragment = RecipeFragment.newInstance(1);
 
             // In case this activity was started with special instructions from an
             // Intent, pass the Intent's extras to the fragment as arguments
-            recipeFragment.setArguments(getIntent().getExtras());
+            mRecipeFragment.setArguments(getIntent().getExtras());
 
             // Add the fragment to the 'fragment_container' FrameLayout
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.recipe_fragment_container, recipeFragment).commit();
+                    .add(R.id.recipe_fragment_container, mRecipeFragment).commit();
         }
     }
 
@@ -50,21 +52,8 @@ public class MainActivity extends AppCompatActivity implements RecipeFragment.On
     }
 
     @Override
-    public void onListFragmentInteraction(DummyContent.DummyItem item) {
+    public void onListFragmentInteraction(Recipe recipe) {
         // TODO: Launch recipe when clicking
-        Log.i(TAG, item.toString());
-    }
-
-    /**
-     * Finds the number of columns of recipes to be displayed
-     *
-     * @return  3 for tablets in landscape and 1 for everything else
-     */
-    private int getNumberOfColumns() {
-        if (getResources().getConfiguration().smallestScreenWidthDp >= 600
-                && getResources().getConfiguration().orientation == ORIENTATION_LANDSCAPE) {
-            return 3;
-        }
-        return 1;
+        Log.i(TAG, recipe.toString());
     }
 }

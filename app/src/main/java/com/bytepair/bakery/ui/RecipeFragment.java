@@ -1,20 +1,23 @@
 package com.bytepair.bakery.ui;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.bytepair.bakery.R;
-import com.bytepair.bakery.ui.dummy.DummyContent;
-import com.bytepair.bakery.ui.dummy.DummyContent.DummyItem;
+import com.bytepair.bakery.models.Recipe;
+import com.bytepair.bakery.presenters.RecipePresenter;
+import com.bytepair.bakery.ui.interfaces.RecyclerViewInterface;
 
-import java.util.List;
+import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
 
 /**
  * A fragment representing a list of Items.
@@ -22,11 +25,17 @@ import java.util.List;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class RecipeFragment extends Fragment {
+public class RecipeFragment extends Fragment implements RecyclerViewInterface {
+
+    private static final String TAG = RecipeFragment.class.getSimpleName();
 
     private static final String ARG_COLUMN_COUNT = "column-count";
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
+    private MyRecipeRecyclerViewAdapter mMyRecipeRecyclerViewAdapter;
+    private RecipePresenter mRecipePresenter;
+    private RecyclerView mRecyclerView;
+    private Context mContext;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -62,18 +71,32 @@ public class RecipeFragment extends Fragment {
 
         // Set the adapter
         if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
-            if (mColumnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-            }
-            recyclerView.setAdapter(new MyRecipeRecyclerViewAdapter(DummyContent.ITEMS, mListener));
+            mContext = view.getContext();
+            mRecyclerView = (RecyclerView) view;
+            resetColumnCount();
+            mRecipePresenter = new RecipePresenter(this);
+            mMyRecipeRecyclerViewAdapter = new MyRecipeRecyclerViewAdapter(mRecipePresenter.getRecipes(), mListener);
+            mRecyclerView.setAdapter(mMyRecipeRecyclerViewAdapter);
+            mRecipePresenter.initializeRecipes();
         }
         return view;
     }
 
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        resetColumnCount();
+    }
+
+    private void resetColumnCount() {
+        mColumnCount = getNumberOfColumns();
+        if (mColumnCount <= 1) {
+            mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
+        } else {
+            mRecyclerView.setLayoutManager(new GridLayoutManager(mContext, mColumnCount));
+        }
+        Log.i(TAG, "New column count: " + mColumnCount);
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -92,6 +115,23 @@ public class RecipeFragment extends Fragment {
         mListener = null;
     }
 
+    @Override
+    public void loadDataSuccess() {
+        Log.i(TAG, "load data success");
+        mMyRecipeRecyclerViewAdapter.setRecipes(mRecipePresenter.getRecipes());
+        mMyRecipeRecyclerViewAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void loadDataFailure() {
+        Log.i(TAG, "load data fail");
+    }
+
+    @Override
+    public void loadDataInProgress() {
+        Log.i(TAG, "load data in progress");
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -104,6 +144,19 @@ public class RecipeFragment extends Fragment {
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(DummyItem item);
+        void onListFragmentInteraction(Recipe recipe);
+    }
+
+    /**
+     * Finds the number of columns of recipes to be displayed
+     *
+     * @return  3 for tablets in landscape and 1 for everything else
+     */
+    private int getNumberOfColumns() {
+        if (getResources().getConfiguration().smallestScreenWidthDp >= 600
+                && getResources().getConfiguration().orientation == ORIENTATION_LANDSCAPE) {
+            return 3;
+        }
+        return 1;
     }
 }

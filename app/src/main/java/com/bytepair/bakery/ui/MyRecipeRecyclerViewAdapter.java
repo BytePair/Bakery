@@ -7,23 +7,23 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.bytepair.bakery.R;
+import com.bytepair.bakery.models.Recipe;
 import com.bytepair.bakery.ui.RecipeFragment.OnListFragmentInteractionListener;
 import com.bytepair.bakery.ui.dummy.DummyContent.DummyItem;
 
 import java.util.List;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
+ * {@link RecyclerView.Adapter} that can display a {@link Recipe} and makes a call to the
  * specified {@link OnListFragmentInteractionListener}.
- * TODO: Replace the implementation with code for your data type.
  */
 public class MyRecipeRecyclerViewAdapter extends RecyclerView.Adapter<MyRecipeRecyclerViewAdapter.ViewHolder> {
 
-    private final List<DummyItem> mValues;
+    private List<Recipe> mRecipes;
     private final OnListFragmentInteractionListener mListener;
 
-    public MyRecipeRecyclerViewAdapter(List<DummyItem> items, OnListFragmentInteractionListener listener) {
-        mValues = items;
+    public MyRecipeRecyclerViewAdapter(List<Recipe> recipes, OnListFragmentInteractionListener listener) {
+        mRecipes = recipes;
         mListener = listener;
     }
 
@@ -36,9 +36,13 @@ public class MyRecipeRecyclerViewAdapter extends RecyclerView.Adapter<MyRecipeRe
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).content);
+        holder.mRecipe = mRecipes.get(position);
+        if (mRecipes.get(position).getId() != null) {
+            holder.mIdView.setText(String.valueOf(mRecipes.get(position).getId()));
+        }
+        if (mRecipes.get(position).getName() != null) {
+            holder.mContentView.setText(mRecipes.get(position).getName());
+        }
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -46,7 +50,7 @@ public class MyRecipeRecyclerViewAdapter extends RecyclerView.Adapter<MyRecipeRe
                 if (null != mListener) {
                     // Notify the active callbacks interface (the activity, if the
                     // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(holder.mItem);
+                    mListener.onListFragmentInteraction(holder.mRecipe);
                 }
             }
         });
@@ -54,14 +58,14 @@ public class MyRecipeRecyclerViewAdapter extends RecyclerView.Adapter<MyRecipeRe
 
     @Override
     public int getItemCount() {
-        return mValues.size();
+        return mRecipes.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public final TextView mIdView;
         public final TextView mContentView;
-        public DummyItem mItem;
+        public Recipe mRecipe;
 
         public ViewHolder(View view) {
             super(view);
@@ -74,5 +78,9 @@ public class MyRecipeRecyclerViewAdapter extends RecyclerView.Adapter<MyRecipeRe
         public String toString() {
             return super.toString() + " '" + mContentView.getText() + "'";
         }
+    }
+
+    public void setRecipes(List<Recipe> recipes) {
+        this.mRecipes = recipes;
     }
 }
