@@ -1,5 +1,6 @@
 package com.bytepair.bakery.views;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -8,6 +9,9 @@ import android.widget.FrameLayout;
 
 import com.bytepair.bakery.R;
 import com.bytepair.bakery.models.Recipe;
+import com.google.gson.Gson;
+
+import static com.bytepair.bakery.views.StepListActivity.RECIPE_ARGUMENT;
 
 public class MainActivity extends AppCompatActivity implements RecipeFragment.OnListFragmentInteractionListener {
 
@@ -51,6 +55,9 @@ public class MainActivity extends AppCompatActivity implements RecipeFragment.On
     @Override
     public void onListFragmentInteraction(Recipe recipe) {
         // TODO: Launch recipe when clicking
-        Log.i(TAG, recipe.toString());
+        Log.i(TAG, "Cliked: " + recipe.getName());
+        Intent intent = new Intent(this, StepListActivity.class);
+        intent.putExtra(RECIPE_ARGUMENT, new Gson().toJson(recipe));
+        startActivity(intent);
     }
 }

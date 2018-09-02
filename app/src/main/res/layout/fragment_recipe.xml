@@ -5,8 +5,8 @@
     android:layout_height="wrap_content"
     android:layout_margin="0dp"
     android:orientation="horizontal"
-    android:paddingLeft="@dimen/defaultMargin"
-    android:paddingRight="@dimen/defaultMargin"
+    android:paddingLeft="@dimen/normal_margin"
+    android:paddingRight="@dimen/normal_margin"
     android:paddingTop="@dimen/normal_margin">
 
     <TextView
