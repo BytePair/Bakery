@@ -1,11 +1,10 @@
 package com.bytepair.bakery.ui;
 
 import android.content.Context;
-import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,73 +28,36 @@ public class RecipeFragment extends Fragment implements RecyclerViewInterface {
 
     private static final String TAG = RecipeFragment.class.getSimpleName();
 
-    private static final String ARG_COLUMN_COUNT = "column-count";
-    private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
     private MyRecipeRecyclerViewAdapter mMyRecipeRecyclerViewAdapter;
     private RecipePresenter mRecipePresenter;
-    private RecyclerView mRecyclerView;
-    private Context mContext;
+    private int mColumnCount;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
     public RecipeFragment() {
-    }
-
-    // Customize parameter initialization
-    @SuppressWarnings("unused")
-    public static RecipeFragment newInstance(int columnCount) {
-        RecipeFragment fragment = new RecipeFragment();
-        fragment.mColumnCount = columnCount;
-        Bundle args = new Bundle();
-        args.putInt(ARG_COLUMN_COUNT, columnCount);
-        fragment.setArguments(args);
-        return fragment;
+        mColumnCount = 1;
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        if (getArguments() != null) {
-            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
-        }
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_recipe_list, container, false);
 
         // Set the adapter
         if (view instanceof RecyclerView) {
-            mContext = view.getContext();
-            mRecyclerView = (RecyclerView) view;
-            resetColumnCount();
+            Context mContext = view.getContext();
+            mColumnCount = getNumberOfColumns();
+            RecyclerView mRecyclerView = (RecyclerView) view;
+            mRecyclerView.setLayoutManager(new GridLayoutManager(mContext, mColumnCount));
             mRecipePresenter = new RecipePresenter(this);
             mMyRecipeRecyclerViewAdapter = new MyRecipeRecyclerViewAdapter(mRecipePresenter.getRecipes(), mListener);
             mRecyclerView.setAdapter(mMyRecipeRecyclerViewAdapter);
             mRecipePresenter.initializeRecipes();
         }
         return view;
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        resetColumnCount();
-    }
-
-    private void resetColumnCount() {
-        mColumnCount = getNumberOfColumns();
-        if (mColumnCount <= 1) {
-            mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
-        } else {
-            mRecyclerView.setLayoutManager(new GridLayoutManager(mContext, mColumnCount));
-        }
-        Log.i(TAG, "New column count: " + mColumnCount);
     }
 
     @Override

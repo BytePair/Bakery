@@ -1,15 +1,13 @@
 package com.bytepair.bakery.ui;
 
 import android.content.res.Configuration;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.FrameLayout;
 
 import com.bytepair.bakery.R;
 import com.bytepair.bakery.models.Recipe;
-
-import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
 
 public class MainActivity extends AppCompatActivity implements RecipeFragment.OnListFragmentInteractionListener {
 
@@ -28,13 +26,12 @@ public class MainActivity extends AppCompatActivity implements RecipeFragment.On
 
             // However, if we're being restored from a previous state,
             // return early to avoid making duplicate fragments
-            // remove existing views so we don't get overlapping fragments
             if (savedInstanceState != null) {
                 return;
             }
 
             // Create a new Fragment to be placed in the activity layout
-            mRecipeFragment = RecipeFragment.newInstance(1);
+            mRecipeFragment = new RecipeFragment();
 
             // In case this activity was started with special instructions from an
             // Intent, pass the Intent's extras to the fragment as arguments

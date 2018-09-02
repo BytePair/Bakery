@@ -9,7 +9,6 @@ import android.widget.TextView;
 import com.bytepair.bakery.R;
 import com.bytepair.bakery.models.Recipe;
 import com.bytepair.bakery.ui.RecipeFragment.OnListFragmentInteractionListener;
-import com.bytepair.bakery.ui.dummy.DummyContent.DummyItem;
 
 import java.util.List;
 
@@ -37,9 +36,6 @@ public class MyRecipeRecyclerViewAdapter extends RecyclerView.Adapter<MyRecipeRe
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mRecipe = mRecipes.get(position);
-        if (mRecipes.get(position).getId() != null) {
-            holder.mIdView.setText(String.valueOf(mRecipes.get(position).getId()));
-        }
         if (mRecipes.get(position).getName() != null) {
             holder.mContentView.setText(mRecipes.get(position).getName());
         }
@@ -63,15 +59,13 @@ public class MyRecipeRecyclerViewAdapter extends RecyclerView.Adapter<MyRecipeRe
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public final TextView mIdView;
         public final TextView mContentView;
         public Recipe mRecipe;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = (TextView) view.findViewById(R.id.item_number);
-            mContentView = (TextView) view.findViewById(R.id.content);
+            mContentView = view.findViewById(R.id.content);
         }
 
         @Override
