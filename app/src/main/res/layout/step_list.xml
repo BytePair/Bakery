@@ -5,7 +5,7 @@
     android:name="com.bytepair.bakery.views.StepListFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
     tools:context=".views.StepListActivity"
-    tools:listitem="@layout/step_list_content" />
+    tools:listitem="@layout/step_list_content"
+    android:padding="@dimen/normal_margin"
+    android:clipToPadding="false" />

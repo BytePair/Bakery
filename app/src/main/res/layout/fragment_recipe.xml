@@ -7,7 +7,7 @@
     android:orientation="horizontal"
     android:paddingLeft="@dimen/normal_margin"
     android:paddingRight="@dimen/normal_margin"
-    android:paddingTop="@dimen/normal_margin">
+    android:paddingTop="32dp">
 
     <TextView
         android:id="@+id/content"
