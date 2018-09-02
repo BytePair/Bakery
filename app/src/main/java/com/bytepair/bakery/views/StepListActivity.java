@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,10 +12,11 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
@@ -22,9 +24,9 @@ import android.view.MenuItem;
 
 import com.bytepair.bakery.R;
 
+import com.bytepair.bakery.models.Ingredient;
 import com.bytepair.bakery.models.Recipe;
 import com.bytepair.bakery.models.Step;
-import com.bytepair.bakery.views.dummy.DummyContent;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -63,7 +65,6 @@ public class StepListActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        toolbar.setTitle(getTitle());
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -90,6 +91,16 @@ public class StepListActivity extends AppCompatActivity {
         // Get recipe if passed via intent
         if (getIntent() != null && getIntent().getExtras() != null && getIntent().getExtras().containsKey(RECIPE_ARGUMENT)) {
             mRecipe = new Gson().fromJson(getIntent().getExtras().getString(RECIPE_ARGUMENT), Recipe.class);
+        }
+
+        // if we have a recipe, set title and start filling in ingredients
+        if (mRecipe != null) {
+            if (actionBar != null) {
+                actionBar.setTitle(mRecipe.getName());
+            }
+            toolbar.setTitle(mRecipe.getName());
+            ListView ingredientsListView = findViewById(R.id.ingredients_list_view);
+            ingredientsListView.setAdapter(new IngredientArrayAdapter(this, mRecipe.getIngredients()));
         }
 
         RecyclerView recyclerView = findViewById(R.id.step_list);
@@ -203,6 +214,32 @@ public class StepListActivity extends AppCompatActivity {
                 mCardView = view.findViewById(R.id.step_card_view);
                 mContentView = view.findViewById(R.id.content);
             }
+        }
+    }
+
+    private class IngredientArrayAdapter extends ArrayAdapter<Ingredient> {
+
+        private List<Ingredient> mIngredients;
+
+        public IngredientArrayAdapter(Context context, List<Ingredient> ingredients) {
+            super(context, 0, ingredients);
+            mIngredients = ingredients;
+        }
+
+        @NonNull
+        @Override
+        public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+            Ingredient ingredient = mIngredients.get(position);
+            // inflate view if it doesn't exist yet
+            if (convertView == null) {
+                convertView = LayoutInflater.from(getContext()).inflate(R.layout.ingredient_list_item, parent, false);
+            }
+            // set text in the view
+            TextView ingredientTextView = convertView.findViewById(R.id.ingredient_name_view);
+            TextView quantityTextView = convertView.findViewById(R.id.ingredient_quantity_view);
+            ingredientTextView.setText(ingredient.getIngredient());
+            quantityTextView.setText(String.valueOf(ingredient.getMeasure() + "  " + ingredient.getQuantity()));
+            return convertView;
         }
     }
 }
