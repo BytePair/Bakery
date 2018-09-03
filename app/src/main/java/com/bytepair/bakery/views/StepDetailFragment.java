@@ -9,6 +9,8 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +34,7 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 import com.google.gson.Gson;
 
+import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
 import static com.bytepair.bakery.views.StepListActivity.RECIPE_ARGUMENT;
 
 /**
@@ -73,17 +76,17 @@ public class StepDetailFragment extends Fragment {
             mRecipe = new Gson().fromJson(getArguments().getString(RECIPE_ARGUMENT), Recipe.class);
             mStepNumber = getArguments().getInt(STEP_NUMBER_ARGUMENT);
 
-            Activity activity = this.getActivity();
-            CollapsingToolbarLayout appBarLayout = null;
+            AppCompatActivity activity = (AppCompatActivity) getActivity();
+            ActionBar actionBar = null;
             if (activity != null) {
-                appBarLayout = activity.findViewById(R.id.toolbar_layout);
+                actionBar = activity.getSupportActionBar();
             }
-            if (appBarLayout != null) {
+            if (actionBar != null) {
                 if (mStepNumber == null || mStepNumber < 1) {
-                    appBarLayout.setTitle("Introduction");
+                    actionBar.setTitle("Introduction");
                 }
                 else {
-                    appBarLayout.setTitle("Step #" + mRecipe.getSteps().get(mStepNumber).getId());
+                    actionBar.setTitle("Step #" + mRecipe.getSteps().get(mStepNumber).getId());
                 }
             }
         }
@@ -92,26 +95,43 @@ public class StepDetailFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.step_detail, container, false);
+
+        View rootView = null; // = inflater.inflate(R.layout.step_detail, container, false);
 
         // TODO: fill in rest of detailed step view
         if (mStepNumber != null && mRecipe != null) {
-            // Ensure description exists before setting it
+
             Step step = mRecipe.getSteps().get(mStepNumber);
+
+            // Set video
+            if (step.getVideoURL() != null && step.getVideoURL().length() > 0) {
+                if (getResources().getConfiguration().orientation == ORIENTATION_LANDSCAPE
+                        && getResources().getConfiguration().screenWidthDp < 720) {
+                    rootView = inflater.inflate(R.layout.step_detail_player_only, container, false);
+                    ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
+                    rootView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_IMMERSIVE);
+                }
+                else {
+                    rootView = inflater.inflate(R.layout.step_detail, container, false);
+                }
+                bindPlayerView(rootView, step.getVideoURL());
+            }
+            else {
+                rootView = inflater.inflate(R.layout.step_detail, container, false);
+                hideVideoPlayer(rootView);
+            }
+
+            // Set description
             String description = step.getDescription();
             if (description != null && description.length() > 3) {
                 // if it is not step 1, remove the step number from description before showing
                 if (mStepNumber > 0) {
                     description = description.substring(3);
                 }
-                ((TextView) rootView.findViewById(R.id.step_detail)).setText(description);
-            }
-
-            if (step.getVideoURL() != null && step.getVideoURL().length() > 0) {
-                 bindPlayerView(rootView, step.getVideoURL());
-            }
-            else {
-                hideVideoPlayer(rootView);
+                TextView textView = rootView.findViewById(R.id.step_detail);
+                if (textView != null) {
+                    textView.setText(description);
+                }
             }
 
             // Set up the FAB buttons to navigate to previous and next steps
