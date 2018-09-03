@@ -31,6 +31,8 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.bytepair.bakery.views.StepDetailFragment.STEP_NUMBER_ARGUMENT;
+
 /**
  * An activity representing a list of Steps. This activity
  * has different presentations for handset and tablet-size devices. On
@@ -126,7 +128,7 @@ public class StepListActivity extends AppCompatActivity {
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, mRecipe.getSteps(), mTwoPane));
+        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, mRecipe, mTwoPane));
     }
 
     public static class SimpleItemRecyclerViewAdapter
@@ -136,7 +138,7 @@ public class StepListActivity extends AppCompatActivity {
         private List<ViewHolder> mViews = new ArrayList<>();
 
         private final StepListActivity mParentActivity;
-        private final List<Step> mSteps;
+        private final Recipe mRecipe;
         private final boolean mTwoPane;
         private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
             @Override
@@ -147,7 +149,8 @@ public class StepListActivity extends AppCompatActivity {
                     hidePlaceholderTextView();
                     highlightSelectedView(view);
                     Bundle arguments = new Bundle();
-                    arguments.putString(StepDetailFragment.STEP_ARGUMENT, new Gson().toJson(step));
+                    arguments.putString(RECIPE_ARGUMENT, new Gson().toJson(mRecipe));
+                    arguments.putInt(STEP_NUMBER_ARGUMENT, step.getId());
                     StepDetailFragment fragment = new StepDetailFragment();
                     fragment.setArguments(arguments);
                     mParentActivity.getSupportFragmentManager().beginTransaction()
@@ -156,7 +159,8 @@ public class StepListActivity extends AppCompatActivity {
                 } else {
                     Context context = view.getContext();
                     Intent intent = new Intent(context, StepDetailActivity.class);
-                    intent.putExtra(StepDetailFragment.STEP_ARGUMENT, new Gson().toJson(step));
+                    intent.putExtra(RECIPE_ARGUMENT, new Gson().toJson(mRecipe));
+                    intent.putExtra(STEP_NUMBER_ARGUMENT, step.getId());
 
                     context.startActivity(intent);
                 }
@@ -188,8 +192,8 @@ public class StepListActivity extends AppCompatActivity {
             }
         }
 
-        SimpleItemRecyclerViewAdapter(StepListActivity parent, List<Step> steps, boolean twoPane) {
-            mSteps = steps;
+        SimpleItemRecyclerViewAdapter(StepListActivity parent, Recipe recipe, boolean twoPane) {
+            mRecipe = recipe;
             mParentActivity = parent;
             mTwoPane = twoPane;
         }
@@ -204,9 +208,9 @@ public class StepListActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
-            holder.mContentView.setText(mSteps.get(position).getDescription());
+            holder.mContentView.setText(mRecipe.getSteps().get(position).getDescription());
 
-            holder.itemView.setTag(mSteps.get(position));
+            holder.itemView.setTag(mRecipe.getSteps().get(position));
             holder.itemView.setOnClickListener(mOnClickListener);
 
             mViews.add(holder);
@@ -214,7 +218,7 @@ public class StepListActivity extends AppCompatActivity {
 
         @Override
         public int getItemCount() {
-            return mSteps.size();
+            return mRecipe.getSteps().size();
         }
 
         class ViewHolder extends RecyclerView.ViewHolder {

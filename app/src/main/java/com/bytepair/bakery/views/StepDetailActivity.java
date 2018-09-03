@@ -1,18 +1,16 @@
 package com.bytepair.bakery.views;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
 
 import com.bytepair.bakery.R;
+import com.google.gson.Gson;
 
-import static com.bytepair.bakery.views.StepDetailFragment.STEP_ARGUMENT;
+import static com.bytepair.bakery.views.StepDetailFragment.STEP_NUMBER_ARGUMENT;
+import static com.bytepair.bakery.views.StepListActivity.RECIPE_ARGUMENT;
 
 /**
  * An activity representing a single Step detail screen. This
@@ -28,9 +26,6 @@ public class StepDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_step_detail);
         Toolbar toolbar = findViewById(R.id.detail_toolbar);
         setSupportActionBar(toolbar);
-
-        // Set up the FAB buttons to navigate to previous and next steps
-        setUpFABs();
 
         // Show the Up button in the action bar.
         ActionBar actionBar = getSupportActionBar();
@@ -51,8 +46,9 @@ public class StepDetailActivity extends AppCompatActivity {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             Bundle arguments = new Bundle();
-            arguments.putString(STEP_ARGUMENT,
-                    getIntent().getStringExtra(STEP_ARGUMENT));
+            arguments.putString(RECIPE_ARGUMENT, getIntent().getStringExtra(RECIPE_ARGUMENT));
+            arguments.putInt(STEP_NUMBER_ARGUMENT, getIntent().getIntExtra(STEP_NUMBER_ARGUMENT, 0));
+
             StepDetailFragment fragment = new StepDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
@@ -76,37 +72,5 @@ public class StepDetailActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    /**
-     * Tries to set up the previous and next step buttons
-     *  - both are hidden for tablet view
-     *  - previous is hidden if on first step
-     *  - next is hidden if on last step
-     */
-    private void setUpFABs() {
-        // set up button to go to next step
-        FloatingActionButton backFab = findViewById(R.id.back_fab);
-        if (backFab != null) {
-            backFab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Snackbar.make(view, "Back FAB", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-                }
-            });
-        }
-
-        // set up button to go to next step
-        FloatingActionButton forwardFab = findViewById(R.id.forward_fab);
-        if (forwardFab != null) {
-            forwardFab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Snackbar.make(view, "Forward FAB", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-                }
-            });
-        }
     }
 }
