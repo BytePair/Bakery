@@ -83,7 +83,7 @@ public class StepDetailFragment extends Fragment {
                     appBarLayout.setTitle("Introduction");
                 }
                 else {
-                    appBarLayout.setTitle("Step #" + mStepNumber);
+                    appBarLayout.setTitle("Step #" + mRecipe.getSteps().get(mStepNumber).getId());
                 }
             }
         }
@@ -178,25 +178,50 @@ public class StepDetailFragment extends Fragment {
         // set up button to go to next step
         FloatingActionButton backFab = getActivity().findViewById(R.id.back_fab);
         if (backFab != null) {
-            backFab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Snackbar.make(view, "Back FAB", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-                }
-            });
+            if (mStepNumber < 1) {
+                backFab.setVisibility(View.GONE);
+            }
+            else {
+                backFab.setVisibility(View.VISIBLE);
+                backFab.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Bundle arguments = new Bundle();
+                        arguments.putString(RECIPE_ARGUMENT, new Gson().toJson(mRecipe));
+                        arguments.putInt(STEP_NUMBER_ARGUMENT, mStepNumber - 1);
+                        StepDetailFragment fragment = new StepDetailFragment();
+                        fragment.setArguments(arguments);
+                        getActivity().getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.step_detail_container, fragment)
+                                .commit();
+                    }
+                });
+            }
         }
 
         // set up button to go to next step
         FloatingActionButton forwardFab = getActivity().findViewById(R.id.forward_fab);
         if (forwardFab != null) {
-            forwardFab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Snackbar.make(view, "Forward FAB", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-                }
-            });
+            if (mStepNumber >= mRecipe.getSteps().size() - 1) {
+                forwardFab.setVisibility(View.GONE);
+            }
+            else {
+                forwardFab.setVisibility(View.VISIBLE);
+                forwardFab.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Bundle arguments = new Bundle();
+                        arguments.putString(RECIPE_ARGUMENT, new Gson().toJson(mRecipe));
+                        arguments.putInt(STEP_NUMBER_ARGUMENT, mStepNumber + 1);
+                        StepDetailFragment fragment = new StepDetailFragment();
+                        fragment.setArguments(arguments);
+                        getActivity().getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.step_detail_container, fragment)
+                                .commit();
+                    }
+                });
+            }
+
         }
     }
 

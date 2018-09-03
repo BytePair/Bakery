@@ -144,13 +144,13 @@ public class StepListActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                Step step = (Step) view.getTag();
+                Integer stepPositoin = (Integer) view.getTag();
                 if (mTwoPane) {
                     hidePlaceholderTextView();
                     highlightSelectedView(view);
                     Bundle arguments = new Bundle();
                     arguments.putString(RECIPE_ARGUMENT, new Gson().toJson(mRecipe));
-                    arguments.putInt(STEP_NUMBER_ARGUMENT, step.getId());
+                    arguments.putInt(STEP_NUMBER_ARGUMENT, stepPositoin);
                     StepDetailFragment fragment = new StepDetailFragment();
                     fragment.setArguments(arguments);
                     mParentActivity.getSupportFragmentManager().beginTransaction()
@@ -160,7 +160,7 @@ public class StepListActivity extends AppCompatActivity {
                     Context context = view.getContext();
                     Intent intent = new Intent(context, StepDetailActivity.class);
                     intent.putExtra(RECIPE_ARGUMENT, new Gson().toJson(mRecipe));
-                    intent.putExtra(STEP_NUMBER_ARGUMENT, step.getId());
+                    intent.putExtra(STEP_NUMBER_ARGUMENT, stepPositoin);
 
                     context.startActivity(intent);
                 }
@@ -210,7 +210,7 @@ public class StepListActivity extends AppCompatActivity {
         public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
             holder.mContentView.setText(mRecipe.getSteps().get(position).getDescription());
 
-            holder.itemView.setTag(mRecipe.getSteps().get(position));
+            holder.itemView.setTag(position);
             holder.itemView.setOnClickListener(mOnClickListener);
 
             mViews.add(holder);
