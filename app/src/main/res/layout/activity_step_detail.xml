@@ -49,8 +49,9 @@
         android:layout_margin="@dimen/fab_margin"
         app:layout_anchor="@+id/step_detail_container"
         app:layout_anchorGravity="bottom|start"
-        app:srcCompat="@android:drawable/arrow_up_float"
-        android:rotation="-90"/>
+        app:srcCompat="@drawable/ic_baseline_forward_24px"
+        android:tint="@android:color/white"
+        android:rotation="180" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/forward_fab"
@@ -60,7 +61,7 @@
         android:layout_margin="@dimen/fab_margin"
         app:layout_anchor="@+id/step_detail_container"
         app:layout_anchorGravity="bottom|end"
-        app:srcCompat="@android:drawable/arrow_up_float"
-        android:rotation="90" />
+        app:srcCompat="@drawable/ic_baseline_forward_24px"
+        android:tint="@android:color/white" />
 
 </android.support.design.widget.CoordinatorLayout>
