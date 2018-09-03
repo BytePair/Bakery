@@ -29,14 +29,8 @@ public class StepDetailActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.detail_toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own detail action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        // Set up the FAB buttons to navigate to previous and next steps
+        setUpFABs();
 
         // Show the Up button in the action bar.
         ActionBar actionBar = getSupportActionBar();
@@ -67,6 +61,8 @@ public class StepDetailActivity extends AppCompatActivity {
         }
     }
 
+
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -80,5 +76,37 @@ public class StepDetailActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Tries to set up the previous and next step buttons
+     *  - both are hidden for tablet view
+     *  - previous is hidden if on first step
+     *  - next is hidden if on last step
+     */
+    private void setUpFABs() {
+        // set up button to go to next step
+        FloatingActionButton backFab = findViewById(R.id.back_fab);
+        if (backFab != null) {
+            backFab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Snackbar.make(view, "Back FAB", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                }
+            });
+        }
+
+        // set up button to go to next step
+        FloatingActionButton forwardFab = findViewById(R.id.forward_fab);
+        if (forwardFab != null) {
+            forwardFab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Snackbar.make(view, "Forward FAB", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                }
+            });
+        }
     }
 }
