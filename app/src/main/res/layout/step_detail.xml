@@ -16,12 +16,14 @@
         android:layout_marginRight="@dimen/normal_margin"
         android:layout_marginTop="@dimen/normal_margin"
         app:resize_mode="fixed_width" />
+
     <TextView
         android:id="@+id/step_detail"
         style="?android:attr/textAppearanceLarge"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="16dp"
+        android:layout_marginBottom="@dimen/large_margin"
+        android:padding="@dimen/normal_margin"
         android:textIsSelectable="true"
         tools:context=".views.StepDetailFragment" />
 </LinearLayout>

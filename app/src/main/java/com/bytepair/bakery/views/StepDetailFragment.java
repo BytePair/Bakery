@@ -72,7 +72,12 @@ public class StepDetailFragment extends Fragment {
                 appBarLayout = activity.findViewById(R.id.toolbar_layout);
             }
             if (appBarLayout != null) {
-                appBarLayout.setTitle("Step #" + mStep.getId());
+                if (mStep.getId() == null || mStep.getId() < 1) {
+                    appBarLayout.setTitle("Introduction");
+                }
+                else {
+                    appBarLayout.setTitle("Step #" + mStep.getId());
+                }
             }
         }
     }
@@ -84,7 +89,15 @@ public class StepDetailFragment extends Fragment {
 
         // TODO: fill in rest of detailed step view
         if (mStep != null) {
-            ((TextView) rootView.findViewById(R.id.step_detail)).setText(mStep.getDescription());
+            // Ensure description exists before setting it
+            String description = mStep.getDescription();
+            if (description != null && description.length() > 3) {
+                // if it is not step 1, remove the step number from description before showing
+                if (mStep.getId() > 0) {
+                    description = description.substring(3);
+                }
+                ((TextView) rootView.findViewById(R.id.step_detail)).setText(description);
+            }
 
             if (mStep.getVideoURL() != null && mStep.getVideoURL().length() > 0) {
                  bindPlayerView(rootView, mStep.getVideoURL());
@@ -132,4 +145,14 @@ public class StepDetailFragment extends Fragment {
         // 2. Create and return the player
         return ExoPlayerFactory.newSimpleInstance(getContext(), trackSelector);
     }
+
+    @Override
+    public void onDestroyView() {
+        if (mExoPlayer != null) {
+            mExoPlayer.release();
+            mExoPlayer = null;
+        }
+        super.onDestroyView();
+    }
+
 }

@@ -188,9 +188,7 @@ public class StepListActivity extends AppCompatActivity {
             }
         }
 
-        SimpleItemRecyclerViewAdapter(StepListActivity parent,
-                                      List<Step> steps,
-                                      boolean twoPane) {
+        SimpleItemRecyclerViewAdapter(StepListActivity parent, List<Step> steps, boolean twoPane) {
             mSteps = steps;
             mParentActivity = parent;
             mTwoPane = twoPane;
