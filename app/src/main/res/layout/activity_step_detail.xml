@@ -7,7 +7,8 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     tools:context=".views.StepDetailActivity"
-    tools:ignore="MergeRootFrame">
+    tools:ignore="MergeRootFrame"
+    android:id="@+id/step_detail_coordinator_layout">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
@@ -23,7 +24,8 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v4.widget.NestedScrollView
+    <LinearLayout
+        android:orientation="vertical"
         android:id="@+id/step_detail_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -43,15 +45,16 @@
         android:rotation="180" />
 
     <android.support.design.widget.FloatingActionButton
-        android:visibility="gone"
         android:id="@+id/forward_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|start"
         android:layout_margin="@dimen/fab_margin"
+        android:padding="0dp"
+        android:tint="@android:color/white"
+        android:visibility="gone"
         app:layout_anchor="@+id/step_detail_container"
         app:layout_anchorGravity="bottom|end"
-        app:srcCompat="@drawable/ic_baseline_forward_24px"
-        android:tint="@android:color/white" />
+        app:srcCompat="@drawable/ic_baseline_forward_24px" />
 
 </android.support.design.widget.CoordinatorLayout>

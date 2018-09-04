@@ -1,13 +1,12 @@
 package com.bytepair.bakery.views;
 
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.bytepair.bakery.R;
-import com.google.gson.Gson;
 
 import static com.bytepair.bakery.views.StepDetailFragment.STEP_NUMBER_ARGUMENT;
 import static com.bytepair.bakery.views.StepListActivity.RECIPE_ARGUMENT;

@@ -1,13 +1,10 @@
 package com.bytepair.bakery.views;
 
-import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -33,6 +30,8 @@ import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 import com.google.gson.Gson;
+
+import java.util.Objects;
 
 import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
 import static com.bytepair.bakery.views.StepListActivity.RECIPE_ARGUMENT;
@@ -96,28 +95,27 @@ public class StepDetailFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View rootView = null; // = inflater.inflate(R.layout.step_detail, container, false);
+        View rootView = inflater.inflate(R.layout.step_detail, container, false);
 
-        // TODO: fill in rest of detailed step view
         if (mStepNumber != null && mRecipe != null) {
 
             Step step = mRecipe.getSteps().get(mStepNumber);
+            Objects.requireNonNull(((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar()).show();
 
             // Set video
             if (step.getVideoURL() != null && step.getVideoURL().length() > 0) {
+                // If we are on a small screen and in landscape mode,
                 if (getResources().getConfiguration().orientation == ORIENTATION_LANDSCAPE
                         && getResources().getConfiguration().screenWidthDp < 720) {
-                    rootView = inflater.inflate(R.layout.step_detail_player_only, container, false);
-                    ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
-                    rootView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_IMMERSIVE);
-                }
-                else {
-                    rootView = inflater.inflate(R.layout.step_detail, container, false);
+                    // Hide the action bar
+                    Objects.requireNonNull(((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar()).hide();
+
+                    // Use video only layout
+                    rootView = inflater.inflate(R.layout.video_only_step_detail, container, false);
                 }
                 bindPlayerView(rootView, step.getVideoURL());
             }
             else {
-                rootView = inflater.inflate(R.layout.step_detail, container, false);
                 hideVideoPlayer(rootView);
             }
 
