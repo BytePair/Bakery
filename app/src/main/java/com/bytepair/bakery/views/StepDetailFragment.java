@@ -106,7 +106,7 @@ public class StepDetailFragment extends Fragment {
             if (step.getVideoURL() != null && step.getVideoURL().length() > 0) {
                 // If we are on a small screen and in landscape mode,
                 if (getResources().getConfiguration().orientation == ORIENTATION_LANDSCAPE
-                        && getResources().getConfiguration().screenWidthDp < 720) {
+                        && getResources().getConfiguration().smallestScreenWidthDp < 720) {
                     // Hide the action bar
                     Objects.requireNonNull(((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar()).hide();
 
