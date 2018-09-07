@@ -1,6 +1,7 @@
 package com.bytepair.bakery.views;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,7 +10,9 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,6 +24,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bytepair.bakery.R;
 import com.bytepair.bakery.models.Ingredient;
@@ -67,14 +71,6 @@ public class StepListActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
         // Show the Up button in the action bar.
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -108,6 +104,42 @@ public class StepListActivity extends AppCompatActivity {
         assert recyclerView != null;
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         setupRecyclerView(recyclerView);
+
+        final AlertDialog.Builder alertDialogBuilder = getWidgetAlertDialogBuilder();
+
+        FloatingActionButton fab = findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialogBuilder.show();
+            }
+        });
+    }
+
+    /**
+     * Alert dialog that notifies the user that the ingredients will be visible in the widget
+     *
+     * Helpful tutorial for the alert builder found on droid mentor
+     * http://droidmentor.com/how-do-i-display-an-alert-dialog-on-android/
+     */
+    private AlertDialog.Builder getWidgetAlertDialogBuilder() {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setTitle("Add Ingredients");
+        alertDialogBuilder.setMessage("Would you like to add the ingredients for " + mRecipe.getName() + " to the ingredients widget?");
+        alertDialogBuilder.setCancelable(true);
+        alertDialogBuilder.setIcon(android.R.drawable.ic_dialog_alert);
+        alertDialogBuilder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                // continue with discard
+                Toast.makeText(StepListActivity.this, "Discard", Toast.LENGTH_SHORT).show();
+            }
+        });
+        alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                // do nothing
+            }
+        });
+        return alertDialogBuilder;
     }
 
     @Override
