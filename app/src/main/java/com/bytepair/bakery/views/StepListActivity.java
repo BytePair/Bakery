@@ -117,7 +117,7 @@ public class StepListActivity extends AppCompatActivity {
     }
 
     /**
-     * Alert dialog that notifies the user that the ingredients will be visible in the widget
+     * Alert dialog that notifies the user that the ingredients will be added to the widget
      *
      * Helpful tutorial for the alert builder found on droid mentor
      * http://droidmentor.com/how-do-i-display-an-alert-dialog-on-android/
