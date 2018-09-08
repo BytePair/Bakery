@@ -2,20 +2,40 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#09C"
-    android:padding="@dimen/widget_margin">
+    android:padding="@dimen/widget_margin"
+    android:id="@+id/ingredients_widget_relative_layout"
+    android:background="@drawable/widget_background">
+
+    <TextView
+        android:id="@+id/empty_widget_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/normal_margin"
+        android:gravity="center"
+        android:padding="@dimen/normal_margin"
+        android:text="@string/widget_instructions" />
 
     <TextView
         android:id="@+id/ingredients_widget_title_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:layout_margin="8dp"
-        android:background="#09C"
-        android:textColor="#ffffff"
+        android:layout_marginTop="@dimen/normal_margin"
+        android:background="@android:color/white"
+        android:textColor="@color/colorPrimaryDark"
         android:textSize="24sp"
         android:textStyle="bold|italic"
         tools:text="@string/appwidget_text" />
+
+    <GridView
+        android:id="@+id/ingredients_widget_grid_view"
+        android:layout_width="match_parent"
+        android:layout_height="448dp"
+        android:layout_below="@+id/ingredients_widget_title_text_view"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/normal_margin"
+        android:gravity="center"
+        android:numColumns="1" />
 
 </RelativeLayout>
