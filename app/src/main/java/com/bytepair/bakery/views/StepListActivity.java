@@ -108,7 +108,7 @@ public class StepListActivity extends AppCompatActivity {
 
         final AlertDialog.Builder alertDialogBuilder = getWidgetAlertDialogBuilder();
 
-        FloatingActionButton fab = findViewById(R.id.fab);
+        FloatingActionButton fab = findViewById(R.id.add_to_widget_fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
