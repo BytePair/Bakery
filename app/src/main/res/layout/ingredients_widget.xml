@@ -16,6 +16,7 @@
         android:textColor="@color/colorPrimaryDark"
         android:textSize="24sp"
         android:textStyle="bold|italic"
+        android:text="@string/ingredients"
         tools:text="@string/appwidget_text" />
 
     <TextView

@@ -30,18 +30,13 @@ public class IngredientsWidgetProvider extends AppWidgetProvider {
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.ingredients_widget);
 
-        // If recipe is null, do not try to fill in ingredients list
-        if (recipe == null) {
-            // Set placeholder title
-            views.setTextViewText(R.id.ingredients_widget_title_text_view, context.getString(R.string.ingredients));
+        // Launch the app when clicked
+        Intent appIntent = new Intent(context, MainActivity.class);
+        PendingIntent appPendingIntent = PendingIntent.getActivity(context, 0, appIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        views.setOnClickPendingIntent(R.id.ingredients_widget_relative_layout, appPendingIntent);
 
-            // Launch the app when clicked
-            Intent appIntent = new Intent(context, MainActivity.class);
-            PendingIntent appPendingIntent = PendingIntent.getActivity(context, 0, appIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-            views.setOnClickPendingIntent(R.id.ingredients_widget_relative_layout, appPendingIntent);
-        }
         // Otherwise show recipe title and ingredients list
-        else {
+        if (recipe != null) {
             // Set title to name of recipe
             views.setTextViewText(R.id.ingredients_widget_title_text_view, recipe.getName());
 
