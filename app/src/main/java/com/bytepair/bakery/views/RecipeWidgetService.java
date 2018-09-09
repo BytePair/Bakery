@@ -19,7 +19,7 @@ public class RecipeWidgetService extends RemoteViewsService {
 
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
-        return null;
+        return new RecipeRemoteViewsFactory(this.getApplicationContext());
     }
 }
 
@@ -66,7 +66,7 @@ class RecipeRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory 
 
         RemoteViews views = new RemoteViews(mContext.getPackageName(), R.layout.ingredient_list_item);
         views.setTextViewText(R.id.ingredient_name_view, ingredient.getIngredient());
-        views.setTextViewText(R.id.ingredient_quantity_view, ingredient.getMeasure() + "  " + ingredient.getQuantity());
+        views.setTextViewText(R.id.ingredient_quantity_view, ingredient.getQuantity() + "  " + ingredient.getMeasure());
 
         return views;
     }

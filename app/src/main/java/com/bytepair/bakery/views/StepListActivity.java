@@ -1,18 +1,19 @@
 package com.bytepair.bakery.views;
 
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -29,12 +30,12 @@ import android.widget.Toast;
 import com.bytepair.bakery.R;
 import com.bytepair.bakery.models.Ingredient;
 import com.bytepair.bakery.models.Recipe;
-import com.bytepair.bakery.models.Step;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.bytepair.bakery.views.IngredientsWidgetProvider.WIDGET_RECIPE;
 import static com.bytepair.bakery.views.StepDetailFragment.STEP_NUMBER_ARGUMENT;
 
 /**
@@ -124,14 +125,28 @@ public class StepListActivity extends AppCompatActivity {
      */
     private AlertDialog.Builder getWidgetAlertDialogBuilder() {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder.setTitle("Add Ingredients");
+        alertDialogBuilder.setTitle("  Add Ingredients");
         alertDialogBuilder.setMessage("Would you like to add the ingredients for " + mRecipe.getName() + " to the ingredients widget?");
         alertDialogBuilder.setCancelable(true);
-        alertDialogBuilder.setIcon(android.R.drawable.ic_dialog_alert);
+        alertDialogBuilder.setIcon(R.drawable.ic_launcher);
         alertDialogBuilder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                // continue with discard
-                Toast.makeText(StepListActivity.this, "Discard", Toast.LENGTH_SHORT).show();
+                // Save recipe to shared preferences
+                SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences(
+                        WIDGET_RECIPE, 0);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString(WIDGET_RECIPE, new Gson().toJson(mRecipe, Recipe.class));
+                editor.apply();
+                // Then notify the widget that there is an update
+                AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getApplicationContext());
+                int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(getApplicationContext(), IngredientsWidgetProvider.class));
+                appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.ingredients_widget_grid_view);
+                IngredientsWidgetProvider.updateAppWidgets(
+                        getApplicationContext(),
+                        appWidgetManager,
+                        appWidgetIds);
+                // Show toast to inform the user
+                Toast.makeText(StepListActivity.this, "Ingredients for " + mRecipe.getName() + " added to widget", Toast.LENGTH_SHORT).show();
             }
         });
         alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -286,7 +301,7 @@ public class StepListActivity extends AppCompatActivity {
             TextView ingredientTextView = convertView.findViewById(R.id.ingredient_name_view);
             TextView quantityTextView = convertView.findViewById(R.id.ingredient_quantity_view);
             ingredientTextView.setText(ingredient.getIngredient());
-            quantityTextView.setText(String.valueOf(ingredient.getMeasure() + "  " + ingredient.getQuantity()));
+            quantityTextView.setText(String.valueOf(ingredient.getQuantity() + "  " + ingredient.getMeasure()));
             return convertView;
         }
     }

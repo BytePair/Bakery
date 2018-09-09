@@ -6,21 +6,11 @@ import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.RemoteViews;
-import android.widget.TextView;
 
 import com.bytepair.bakery.R;
-import com.bytepair.bakery.models.Ingredient;
 import com.bytepair.bakery.models.Recipe;
 import com.google.gson.Gson;
-
-import java.util.List;
 
 /**
  * Implementation of App Widget functionality.
@@ -42,21 +32,25 @@ public class IngredientsWidgetProvider extends AppWidgetProvider {
 
         // If recipe is null, do not try to fill in ingredients list
         if (recipe == null) {
-            showEmptyWidget(views);
+            // Set placeholder title
+            views.setTextViewText(R.id.ingredients_widget_title_text_view, context.getString(R.string.ingredients));
+
             // Launch the app when clicked
             Intent appIntent = new Intent(context, MainActivity.class);
             PendingIntent appPendingIntent = PendingIntent.getActivity(context, 0, appIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-            views.setOnClickPendingIntent(R.id.empty_widget_text_view, appPendingIntent);
+            views.setOnClickPendingIntent(R.id.ingredients_widget_relative_layout, appPendingIntent);
         }
         // Otherwise show recipe title and ingredients list
         else {
-            showPopulatedWidget(views);
-            CharSequence widgetText = recipe.getName();
-            views.setTextViewText(R.id.ingredients_widget_title_text_view, widgetText);
+            // Set title to name of recipe
+            views.setTextViewText(R.id.ingredients_widget_title_text_view, recipe.getName());
 
             // Set the RecipeWidgetService intent to act as the adapter for the grid view
             Intent intent = new Intent(context, RecipeWidgetService.class);
             views.setRemoteAdapter(R.id.ingredients_widget_grid_view, intent);
+
+            // Set empty view to show when there are no ingredients
+            views.setEmptyView(R.id.ingredients_widget_grid_view, R.id.empty_widget_text_view);
         }
 
         // Instruct the widget manager to update the widget
@@ -64,23 +58,16 @@ public class IngredientsWidgetProvider extends AppWidgetProvider {
     }
 
     /**
-     * Show only title and grid views
-     * @param remoteViews
+     * Calls updateAppWidget for every id passed
+     * @param context
+     * @param appWidgetManager
+     * @param appWidgetIds
      */
-    private static void showPopulatedWidget(RemoteViews remoteViews) {
-        remoteViews.setViewVisibility(R.id.ingredients_widget_title_text_view, View.VISIBLE);
-        remoteViews.setViewVisibility(R.id.ingredients_widget_grid_view, View.VISIBLE);
-        remoteViews.setViewVisibility(R.id.empty_widget_text_view, View.GONE);
-    }
-
-    /**
-     * Show only instructional text view when recipe is not set
-     * @param remoteViews
-     */
-    private static void showEmptyWidget(RemoteViews remoteViews) {
-        remoteViews.setViewVisibility(R.id.empty_widget_text_view, View.VISIBLE);
-        remoteViews.setViewVisibility(R.id.ingredients_widget_title_text_view, View.GONE);
-        remoteViews.setViewVisibility(R.id.ingredients_widget_grid_view, View.GONE);
+    public static void updateAppWidgets(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+        // There may be multiple widgets active, so update all of them
+        for (int appWidgetId : appWidgetIds) {
+            updateAppWidget(context, appWidgetManager, appWidgetId);
+        }
     }
 
     @Override

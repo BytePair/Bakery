@@ -1,19 +1,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ingredients_widget_relative_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/widget_margin"
-    android:id="@+id/ingredients_widget_relative_layout"
-    android:background="@drawable/widget_background">
-
-    <TextView
-        android:id="@+id/empty_widget_text_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="@dimen/normal_margin"
-        android:gravity="center"
-        android:padding="@dimen/normal_margin"
-        android:text="@string/widget_instructions" />
+    android:background="@drawable/widget_background"
+    android:padding="@dimen/normal_margin">
 
     <TextView
         android:id="@+id/ingredients_widget_title_text_view"
@@ -21,20 +12,27 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/normal_margin"
         android:background="@android:color/white"
         android:textColor="@color/colorPrimaryDark"
         android:textSize="24sp"
         android:textStyle="bold|italic"
         tools:text="@string/appwidget_text" />
 
+    <TextView
+        android:id="@+id/empty_widget_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/ingredients_widget_title_text_view"
+        android:gravity="center"
+        android:text="@string/widget_instructions" />
+
     <GridView
         android:id="@+id/ingredients_widget_grid_view"
         android:layout_width="match_parent"
-        android:layout_height="448dp"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/ingredients_widget_title_text_view"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/normal_margin"
+        android:layout_marginTop="@dimen/small_margin"
         android:gravity="center"
         android:numColumns="1" />
 
