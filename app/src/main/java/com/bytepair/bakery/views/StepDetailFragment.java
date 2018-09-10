@@ -52,6 +52,11 @@ public class StepDetailFragment extends Fragment {
     public static final String STEP_NUMBER_ARGUMENT = "step_number_argument";
 
     /**
+     * Used to restore player to correct position on screen change
+     */
+    public static final String PLAYER_POSITION = "player_position";
+
+    /**
      * Recipe and step number for this fragment
      */
     private Recipe mRecipe;
@@ -116,7 +121,15 @@ public class StepDetailFragment extends Fragment {
                     // Use video only layout
                     rootView = inflater.inflate(R.layout.video_only_step_detail, container, false);
                 }
+
+                // Create and bind the exo player to the player view
                 bindPlayerView(rootView, step.getVideoURL());
+
+                // When rotating device, seek to last position and resume automatically
+                if (savedInstanceState != null) {
+                    mExoPlayer.seekTo(savedInstanceState.getLong(PLAYER_POSITION));
+                    mExoPlayer.setPlayWhenReady(true);
+                }
             }
 
             // Else set image if available
@@ -164,20 +177,21 @@ public class StepDetailFragment extends Fragment {
     }
 
     private void bindPlayerView(View view, String videoUrl) {
-        // Get video uri
-        Uri mp4VideoUri = Uri.parse(videoUrl);
         // Create simple exo player and bind to the view
         if (mExoPlayer == null) {
+            // Get video uri
+            Uri mp4VideoUri = Uri.parse(videoUrl);
+            // Create exo player
             mExoPlayer = createExoPlayer();
+            // Produces DataSource instances through which media data is loaded.
+            DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(view.getContext(),
+                    Util.getUserAgent(view.getContext(), "Bakery"), null);
+            // This is the MediaSource representing the media to be played.
+            MediaSource videoSource = new ExtractorMediaSource.Factory(dataSourceFactory)
+                    .createMediaSource(mp4VideoUri);
+            // Prepare the player with the source.
+            mExoPlayer.prepare(videoSource);
         }
-        // Produces DataSource instances through which media data is loaded.
-        DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(view.getContext(),
-                Util.getUserAgent(view.getContext(), "Bakery"), null);
-        // This is the MediaSource representing the media to be played.
-        MediaSource videoSource = new ExtractorMediaSource.Factory(dataSourceFactory)
-                .createMediaSource(mp4VideoUri);
-        // Prepare the player with the source.
-        mExoPlayer.prepare(videoSource);
         // Find the player view and attach the player
         PlayerView playerView = view.findViewById(R.id.step_video_view);
         playerView.setPlayer(mExoPlayer);
@@ -195,12 +209,12 @@ public class StepDetailFragment extends Fragment {
     }
 
     @Override
-    public void onDestroyView() {
+    public void onStop() {
+        super.onStop();
         if (mExoPlayer != null) {
             mExoPlayer.release();
             mExoPlayer = null;
         }
-        super.onDestroyView();
     }
 
     /**
@@ -264,6 +278,8 @@ public class StepDetailFragment extends Fragment {
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         if (mExoPlayer != null) {
+            outState.putLong(PLAYER_POSITION, mExoPlayer.getCurrentPosition());
         }
     }
+
 }
