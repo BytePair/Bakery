@@ -14,6 +14,14 @@
         android:layout_marginRight="@dimen/normal_margin"
         android:layout_marginTop="@dimen/normal_margin" />
 
+    <ImageView
+        android:id="@+id/step_image_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/normal_margin"
+        android:layout_marginRight="@dimen/normal_margin"
+        android:layout_marginTop="@dimen/normal_margin" />
+
     <TextView
         android:id="@+id/step_detail"
         style="?android:attr/textAppearanceLarge"

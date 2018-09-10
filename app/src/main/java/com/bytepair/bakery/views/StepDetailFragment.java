@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bytepair.bakery.R;
@@ -30,10 +31,12 @@ import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 import com.google.gson.Gson;
+import com.squareup.picasso.Picasso;
 
 import java.util.Objects;
 
 import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
+import static android.text.TextUtils.isEmpty;
 import static com.bytepair.bakery.views.StepListActivity.RECIPE_ARGUMENT;
 
 /**
@@ -102,11 +105,11 @@ public class StepDetailFragment extends Fragment {
             Step step = mRecipe.getSteps().get(mStepNumber);
             Objects.requireNonNull(((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar()).show();
 
-            // Set video
-            if (step.getVideoURL() != null && step.getVideoURL().length() > 0) {
+            // Set video if available
+            if (!isEmpty(step.getVideoURL())) {
                 // If we are on a small screen and in landscape mode,
                 if (getResources().getConfiguration().orientation == ORIENTATION_LANDSCAPE
-                        && getResources().getConfiguration().smallestScreenWidthDp < 720) {
+                        && getResources().getConfiguration().smallestScreenWidthDp < 600) {
                     // Hide the action bar
                     Objects.requireNonNull(((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar()).hide();
 
@@ -115,8 +118,20 @@ public class StepDetailFragment extends Fragment {
                 }
                 bindPlayerView(rootView, step.getVideoURL());
             }
+
+            // Else set image if available
+            else if (!isEmpty(step.getThumbnailURL())) {
+                rootView.findViewById(R.id.step_video_view).setVisibility(View.GONE);
+
+                ImageView imageView = rootView.findViewById(R.id.step_image_view);
+                Picasso.get()
+                        .load(step.getThumbnailURL())
+                        .into(imageView);
+            }
+
+            // Otherwise hide all media views and only display the text
             else {
-                hideVideoPlayer(rootView);
+                hideMedia(rootView);
             }
 
             // Set description
@@ -139,9 +154,13 @@ public class StepDetailFragment extends Fragment {
         return rootView;
     }
 
-    private void hideVideoPlayer(View rootView) {
+    private void hideMedia(View rootView) {
+        // hide video player view
         PlayerView playerView = rootView.findViewById(R.id.step_video_view);
         playerView.setVisibility(View.GONE);
+        // hide image view
+        ImageView imageView = rootView.findViewById(R.id.step_image_view);
+        imageView.setVisibility(View.GONE);
     }
 
     private void bindPlayerView(View view, String videoUrl) {
@@ -183,8 +202,6 @@ public class StepDetailFragment extends Fragment {
         }
         super.onDestroyView();
     }
-
-
 
     /**
      * Tries to set up the previous and next step buttons
@@ -243,4 +260,10 @@ public class StepDetailFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (mExoPlayer != null) {
+        }
+    }
 }
