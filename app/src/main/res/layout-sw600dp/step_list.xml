@@ -49,7 +49,7 @@
                 card_view:cardUseCompatPadding="true"
                 card_view:contentPadding="@dimen/normal_margin">
 
-                <com.bytepair.bakery.views.NonScrollingListView
+                <android.support.v7.widget.RecyclerView
                     android:id="@+id/ingredients_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />

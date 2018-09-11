@@ -91,14 +91,19 @@ public class StepListActivity extends AppCompatActivity {
             mRecipe = new Gson().fromJson(getIntent().getExtras().getString(RECIPE_ARGUMENT), Recipe.class);
         }
 
-        // if we have a recipe, set title and start filling in ingredients
+        // if we have a recipe...
         if (mRecipe != null) {
+            // set title...
             if (actionBar != null) {
                 actionBar.setTitle(mRecipe.getName());
             }
             toolbar.setTitle(mRecipe.getName());
-            NonScrollingListView ingredientsListView = findViewById(R.id.ingredients_view);
-            ingredientsListView.setAdapter(new IngredientArrayAdapter(this, mRecipe.getIngredients()));
+
+            // and show ingredients
+            RecyclerView ingredientsRecyclerView = findViewById(R.id.ingredients_view);
+            assert ingredientsRecyclerView != null;
+            ingredientsRecyclerView.setAdapter(new IngredientRecyclerViewAdapter(mRecipe.getIngredients()));
+            ingredientsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         }
 
         RecyclerView recyclerView = findViewById(R.id.step_list);
@@ -280,16 +285,43 @@ public class StepListActivity extends AppCompatActivity {
         }
     }
 
-    private class IngredientArrayAdapter extends ArrayAdapter<Ingredient> {
+    public class IngredientRecyclerViewAdapter extends RecyclerView.Adapter<IngredientRecyclerViewAdapter.ViewHolder> {
 
         private List<Ingredient> mIngredients;
 
-        IngredientArrayAdapter(Context context, List<Ingredient> ingredients) {
-            super(context, 0, ingredients);
-            mIngredients = ingredients;
+        IngredientRecyclerViewAdapter(List<Ingredient> ingredients) {
+            this.mIngredients = ingredients;
         }
 
         @NonNull
+        @Override
+        public IngredientRecyclerViewAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            Context context = parent.getContext();
+            LayoutInflater inflater = LayoutInflater.from(context);
+
+            // Inflate the custom layout
+            View ingredientsView = inflater.inflate(R.layout.ingredient_list_item, parent, false);
+
+            // Return a new holder instance
+            return new ViewHolder(ingredientsView);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull IngredientRecyclerViewAdapter.ViewHolder holder, int position) {
+            // Get ingredient at that position
+            Ingredient ingredient = mIngredients.get(position);
+
+            // Set views
+            holder.ingredientTextView.setText(ingredient.getIngredient());
+            holder.quantityTextView.setText(String.valueOf(ingredient.getQuantity() + "  " + ingredient.getMeasure()));
+        }
+
+        @Override
+        public int getItemCount() {
+            return (mIngredients == null) ? 0 : mIngredients.size();
+        }
+
+        /*@NonNull
         @Override
         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
             Ingredient ingredient = mIngredients.get(position);
@@ -303,6 +335,18 @@ public class StepListActivity extends AppCompatActivity {
             ingredientTextView.setText(ingredient.getIngredient());
             quantityTextView.setText(String.valueOf(ingredient.getQuantity() + "  " + ingredient.getMeasure()));
             return convertView;
+        }*/
+
+        public class ViewHolder extends RecyclerView.ViewHolder {
+
+            public TextView ingredientTextView;
+            public TextView quantityTextView;
+
+            public ViewHolder(View itemView) {
+                super(itemView);
+                ingredientTextView = itemView.findViewById(R.id.ingredient_name_view);
+                quantityTextView = itemView.findViewById(R.id.ingredient_quantity_view);
+            }
         }
     }
 }
