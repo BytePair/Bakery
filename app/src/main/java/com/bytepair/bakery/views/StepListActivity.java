@@ -8,8 +8,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.NavUtils;
@@ -24,10 +22,8 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bytepair.bakery.R;
 import com.bytepair.bakery.models.Ingredient;
@@ -122,6 +118,14 @@ public class StepListActivity extends AppCompatActivity {
                 alertDialogBuilder.show();
             }
         });
+
+        // Check if placeholder text view should be hidden
+        if (savedInstanceState != null && mRecipe != null) {
+            hidePlaceholderTextView();
+        }
+        else {
+            showPlaceholderTextView();
+        }
     }
 
     /**
@@ -152,7 +156,7 @@ public class StepListActivity extends AppCompatActivity {
                         getApplicationContext(),
                         appWidgetManager,
                         appWidgetIds);
-                // Show toast to inform the user
+                // Show snack bar to inform the user
                 Snackbar snackbar = Snackbar
                         .make(findViewById(R.id.ingredients_view),
                                 "Ingredients for " + mRecipe.getName() + " added to widget",
@@ -205,7 +209,7 @@ public class StepListActivity extends AppCompatActivity {
 
                 Integer stepPositoin = (Integer) view.getTag();
                 if (mTwoPane) {
-                    hidePlaceholderTextView();
+                    mParentActivity.hidePlaceholderTextView();;
                     highlightSelectedView(view);
                     Bundle arguments = new Bundle();
                     arguments.putString(RECIPE_ARGUMENT, new Gson().toJson(mRecipe));
@@ -222,20 +226,6 @@ public class StepListActivity extends AppCompatActivity {
                     intent.putExtra(STEP_NUMBER_ARGUMENT, stepPositoin);
 
                     context.startActivity(intent);
-                }
-            }
-
-            /**
-             * Makes detail container visible and hides the placeholder text
-             */
-            private void hidePlaceholderTextView() {
-                TextView textView = mParentActivity.findViewById(R.id.get_started_text_view);
-                if (textView != null) {
-                    textView.setVisibility(View.GONE);
-                }
-                FrameLayout frameLayout = mParentActivity.findViewById(R.id.step_detail_container);
-                if (frameLayout != null) {
-                    frameLayout.setVisibility(View.VISIBLE);
                 }
             }
         };
@@ -338,6 +328,34 @@ public class StepListActivity extends AppCompatActivity {
                 ingredientTextView = itemView.findViewById(R.id.ingredient_name_view);
                 quantityTextView = itemView.findViewById(R.id.ingredient_quantity_view);
             }
+        }
+    }
+
+    /**
+     * Makes detail container visible and hides the placeholder text
+     */
+    private void hidePlaceholderTextView() {
+        TextView textView = findViewById(R.id.get_started_text_view);
+        if (textView != null) {
+            textView.setVisibility(View.GONE);
+        }
+        FrameLayout frameLayout = findViewById(R.id.step_detail_container);
+        if (frameLayout != null) {
+            frameLayout.setVisibility(View.VISIBLE);
+        }
+    }
+
+    /**
+     * Makes detail container invisible and shows the placeholder text
+     */
+    private void showPlaceholderTextView() {
+        TextView textView = findViewById(R.id.get_started_text_view);
+        if (textView != null) {
+            textView.setVisibility(View.VISIBLE);
+        }
+        FrameLayout frameLayout = findViewById(R.id.step_detail_container);
+        if (frameLayout != null) {
+            frameLayout.setVisibility(View.GONE);
         }
     }
 }
