@@ -9,7 +9,9 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -151,7 +153,12 @@ public class StepListActivity extends AppCompatActivity {
                         appWidgetManager,
                         appWidgetIds);
                 // Show toast to inform the user
-                Toast.makeText(StepListActivity.this, "Ingredients for " + mRecipe.getName() + " added to widget", Toast.LENGTH_SHORT).show();
+                Snackbar snackbar = Snackbar
+                        .make(findViewById(R.id.ingredients_view),
+                                "Ingredients for " + mRecipe.getName() + " added to widget",
+                                Snackbar.LENGTH_LONG);
+
+                snackbar.show();
             }
         });
         alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -320,22 +327,6 @@ public class StepListActivity extends AppCompatActivity {
         public int getItemCount() {
             return (mIngredients == null) ? 0 : mIngredients.size();
         }
-
-        /*@NonNull
-        @Override
-        public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-            Ingredient ingredient = mIngredients.get(position);
-            // inflate view if it doesn't exist yet
-            if (convertView == null) {
-                convertView = LayoutInflater.from(getContext()).inflate(R.layout.ingredient_list_item, parent, false);
-            }
-            // set text in the view
-            TextView ingredientTextView = convertView.findViewById(R.id.ingredient_name_view);
-            TextView quantityTextView = convertView.findViewById(R.id.ingredient_quantity_view);
-            ingredientTextView.setText(ingredient.getIngredient());
-            quantityTextView.setText(String.valueOf(ingredient.getQuantity() + "  " + ingredient.getMeasure()));
-            return convertView;
-        }*/
 
         public class ViewHolder extends RecyclerView.ViewHolder {
 
